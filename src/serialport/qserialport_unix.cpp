@@ -837,6 +837,11 @@ inline bool QSerialPortPrivate::initialize(QIODevice::OpenMode mode)
 
     restoredTermios = tio;
 
+    auto restoreParametersOnError = qScopeGuard([this] {
+        if (settingsRestoredOnClose)
+            ::tcsetattr(descriptor, TCSANOW, &restoredTermios);
+    });
+
     qt_set_common_props(&tio, mode);
     qt_set_databits(&tio, dataBits);
     qt_set_parity(&tio, parity);
@@ -855,6 +860,7 @@ inline bool QSerialPortPrivate::initialize(QIODevice::OpenMode mode)
     // flush IO buffers
     clear(QSerialPort::AllDirections);
 
+    restoreParametersOnError.dismiss();
     return true;
 }
 

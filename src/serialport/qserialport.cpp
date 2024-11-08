@@ -1172,6 +1172,48 @@ QBindable<bool> QSerialPort::bindableIsBreakEnabled()
 }
 
 /*!
+    \fn void QSerialPort::settingsRestoredOnCloseChanged(bool restore)
+    \since 6.9
+
+    This signal is emitted after the settingsRestoredOnClose property is
+    changed. The \a restore parameter contains the new value of the property.
+
+    \sa QSerialPort::settingsRestoredOnClose
+*/
+
+/*!
+    \property QSerialPort::settingsRestoredOnClose
+    \since 6.9
+    \brief This property defines if the port parameters should be restored on
+    close or not
+
+    After the port is opened, the class caches its parameters before applying
+    the parameters that are defined by the user.
+
+    If the property is \c true, the serial port tries to restore the cached
+    parameters before closing the port; otherwise the caches parameters are
+    discarded.
+
+    The default value is \c true.
+*/
+bool QSerialPort::settingsRestoredOnClose() const
+{
+    Q_D(const QSerialPort);
+    return d->settingsRestoredOnClose;
+}
+
+void QSerialPort::setSettingsRestoredOnClose(bool restore)
+{
+    Q_D(QSerialPort);
+
+    if (d->settingsRestoredOnClose == restore)
+        return;
+
+    d->settingsRestoredOnClose = restore;
+    emit settingsRestoredOnCloseChanged(restore);
+}
+
+/*!
     \reimp
 
     \omit
